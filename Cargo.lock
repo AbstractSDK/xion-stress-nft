@@ -1603,6 +1603,7 @@ name = "xion-nft"
 version = "0.18.0"
 dependencies = [
  "abstract-std",
+ "cosmwasm-schema",
  "cosmwasm-std",
  "cw-storage-plus 1.2.0",
  "cw2 1.1.2",

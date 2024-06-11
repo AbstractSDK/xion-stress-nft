@@ -1,13 +1,15 @@
 pub mod mint;
+pub mod msg;
 
+use abstract_std::objects::version_control::VersionControlContract;
 use cosmwasm_std::{
     entry_point, Binary, Deps, DepsMut, Empty, Env, MessageInfo, Response, StdResult,
 };
 use cw721_base::{
-    ContractError, Cw721Contract, ExecuteMsg, Extension, InstantiateMsg, QueryMsg, CONTRACT_NAME,
-    CONTRACT_VERSION,
+    ContractError, Cw721Contract, ExecuteMsg, Extension, QueryMsg, CONTRACT_NAME, CONTRACT_VERSION,
 };
-use mint::abstract_account_mint;
+use mint::{abstract_account_mint, ABSTRACT_CONFIG};
+use msg::InstantiateMsg;
 
 // This makes a conscious choice on the various generics used by the contract
 #[cfg_attr(not(feature = "library"), entry_point)]
@@ -19,8 +21,15 @@ pub fn instantiate(
 ) -> Result<Response, ContractError> {
     cw2::set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
 
+    ABSTRACT_CONFIG.save(
+        deps.storage,
+        &VersionControlContract {
+            address: deps.api.addr_validate(&msg.abstract_vc)?,
+        },
+    )?;
+
     let tract = Cw721Contract::<Extension, Empty, Empty, Empty>::default();
-    tract.instantiate(deps, env, info, msg)
+    tract.instantiate(deps, env, info, msg.cw721_msg)
 }
 
 #[cfg_attr(not(feature = "library"), entry_point)]
