@@ -1,3 +1,6 @@
+#[cfg(not(target_arch = "wasm32"))]
+pub mod interface;
+
 pub mod mint;
 pub mod msg;
 
@@ -10,6 +13,9 @@ use cw721_base::{
 };
 use mint::{abstract_account_mint, ABSTRACT_CONFIG};
 use msg::InstantiateMsg;
+
+pub type NftExecuteMsg = ExecuteMsg<Extension, Empty>;
+pub type NftQueryMsg = QueryMsg<Empty>;
 
 // This makes a conscious choice on the various generics used by the contract
 #[cfg_attr(not(feature = "library"), entry_point)]
@@ -37,7 +43,7 @@ pub fn execute(
     deps: DepsMut,
     env: Env,
     info: MessageInfo,
-    msg: ExecuteMsg<Extension, Empty>,
+    msg: NftExecuteMsg,
 ) -> Result<Response, ContractError> {
     let tract = Cw721Contract::<Extension, Empty, Empty, Empty>::default();
 
@@ -54,7 +60,7 @@ pub fn execute(
 }
 
 #[cfg_attr(not(feature = "library"), entry_point)]
-pub fn query(deps: Deps, env: Env, msg: QueryMsg<Empty>) -> StdResult<Binary> {
+pub fn query(deps: Deps, env: Env, msg: NftQueryMsg) -> StdResult<Binary> {
     let tract = Cw721Contract::<Extension, Empty, Empty, Empty>::default();
     tract.query(deps, env, msg)
 }

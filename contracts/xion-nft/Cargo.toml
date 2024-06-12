@@ -13,9 +13,20 @@ rust-version.workspace = true
 library = []
 
 [dependencies]
+abstract-client = "0.22.1"
 abstract-std = "0.22.2"
 cosmwasm-schema.workspace = true
 cosmwasm-std.workspace = true
+cw-orch = "0.22.0"
 cw-storage-plus.workspace = true
 cw2.workspace = true
-cw721-base = { version = "0.18.0", path = "../cw721-base", features = ["library"] }
+cw721.workspace = true
+cw721-base = { version = "0.18.0", path = "../cw721-base", features = [
+    "library",
+] }
+
+[dev-dependencies]
+cw-orch-polytone = { package = "abstract-cw-orch-polytone", version = "2.0.4" }
+abstract-interface = { version = "0.22.5", features = ["interchain"] }
+polytone = { package = "abstract-polytone", version = "1.0.5" }
+cw-orch-interchain = "0.1.0"
