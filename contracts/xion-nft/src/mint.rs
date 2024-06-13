@@ -3,7 +3,7 @@ use cosmwasm_std::{ensure, Addr, DepsMut, Empty, MessageInfo, Response, StdError
 use cw721_base::{state::TokenInfo, ContractError, Cw721Contract, Extension};
 use cw_storage_plus::{Item, Map};
 
-pub const ABSTRACT_CONFIG: Item<VersionControlContract> = Item::new("abstract-config");
+pub const ABSTRACT_VERSION_CONTROL: Item<VersionControlContract> = Item::new("abstract-config");
 pub const MINTED: Map<&Addr, bool> = Map::new("abstract-minted");
 
 pub fn abstract_account_mint(
@@ -45,7 +45,7 @@ pub fn abstract_account_mint(
 }
 
 fn assert_abstract_can_mint(deps: DepsMut, sender: &Addr) -> Result<(), ContractError> {
-    let abstract_config = ABSTRACT_CONFIG.load(deps.storage)?;
+    let abstract_config = ABSTRACT_VERSION_CONTROL.load(deps.storage)?;
 
     // We verify the proxy is who they say they are
     abstract_config
@@ -54,7 +54,7 @@ fn assert_abstract_can_mint(deps: DepsMut, sender: &Addr) -> Result<(), Contract
 
     ensure!(
         MINTED.may_load(deps.storage, sender)?.is_none(),
-        StdError::generic_err("Can't mint more than 1")
+        StdError::generic_err("Can't mint more than 1 NFT.")
     );
 
     MINTED.save(deps.storage, sender, &true)?;

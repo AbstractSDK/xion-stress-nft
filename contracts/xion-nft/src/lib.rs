@@ -9,13 +9,17 @@ use cosmwasm_std::{
     entry_point, Binary, Deps, DepsMut, Empty, Env, MessageInfo, Response, StdResult,
 };
 use cw721_base::{
-    ContractError, Cw721Contract, ExecuteMsg, Extension, QueryMsg, CONTRACT_NAME, CONTRACT_VERSION,
+    ContractError, Cw721Contract, ExecuteMsg, Extension, QueryMsg,
 };
-use mint::{abstract_account_mint, ABSTRACT_CONFIG};
-use msg::InstantiateMsg;
+use mint::{abstract_account_mint, ABSTRACT_VERSION_CONTROL};
+use msg::{InstantiateMsg, MigrateMsg};
 
 pub type NftExecuteMsg = ExecuteMsg<Extension, Empty>;
 pub type NftQueryMsg = QueryMsg<Empty>;
+
+pub const CONTRACT_NAME: &str = "abstract:xion-nft";
+pub const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
+
 
 // This makes a conscious choice on the various generics used by the contract
 #[cfg_attr(not(feature = "library"), entry_point)]
@@ -27,7 +31,7 @@ pub fn instantiate(
 ) -> Result<Response, ContractError> {
     cw2::set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
 
-    ABSTRACT_CONFIG.save(
+    ABSTRACT_VERSION_CONTROL.save(
         deps.storage,
         &VersionControlContract {
             address: deps.api.addr_validate(&msg.abstract_vc)?,
@@ -63,4 +67,15 @@ pub fn execute(
 pub fn query(deps: Deps, env: Env, msg: NftQueryMsg) -> StdResult<Binary> {
     let tract = Cw721Contract::<Extension, Empty, Empty, Empty>::default();
     tract.query(deps, env, msg)
+}
+
+#[cfg_attr(not(feature = "library"), entry_point)]
+pub fn migrate(
+    deps: DepsMut,
+    env: Env,
+    msg: MigrateMsg,
+) -> Result<Response, ContractError> {
+    let version: Version = CONTRACT_VERSION.parse().unwrap();
+
+    cw2::set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
 }

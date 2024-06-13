@@ -6,3 +6,6 @@ pub struct InstantiateMsg {
     pub cw721_msg: Cw721InstantiateMsg,
     pub abstract_vc: String,
 }
+
+#[cw_serde]
+pub struct MigrateMsg {}
