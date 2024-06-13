@@ -19,10 +19,9 @@ impl<Chain> Uploadable for AbstractNFT<Chain> {
     }
     /// Returns a CosmWasm contract wrapper
     fn wrapper() -> Box<dyn MockContract<Empty>> {
-        Box::new(ContractWrapper::new_with_empty(
-            crate::execute,
-            crate::instantiate,
-            crate::query,
-        ))
+        Box::new(
+            ContractWrapper::new_with_empty(crate::execute, crate::instantiate, crate::query)
+                .with_migrate(crate::migrate),
+        )
     }
 }
